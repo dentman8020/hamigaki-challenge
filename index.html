@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e6fd8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Toothbrush Challenge</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<!-- 外への接続をすべて塞ぐ（MediaPipe は既定で Google へ使用ログを送るので、それも止める。2026-11-04 紫穂の検品で発覚） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self' blob:">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 読み込み -->
+  <div id="loading" class="overlay">
+    <div class="loader"><div class="tooth-spin"></div><p data-i18n="loading"></p><div class="bar"><i id="loadBar"></i></div></div>
+  </div>
+
+  <!-- タイトル -->
+  <section id="s-title" class="screen">
+    <div class="sky"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span><span class="bubble b4"></span></div>
+    <div class="langs" id="langs"></div>
+    <div class="title-wrap">
+      <div class="hero" aria-hidden="true">
+        <img class="hero-dent" src="assets/chara/dentman_raise.png" alt="">
+        <img class="hero-mutans" src="assets/chara/mutans_normal.png" alt="">
+      </div>
+      <h1 data-i18n="title"></h1>
+      <p class="tagline" data-i18n="tagline"></p>
+      <button class="btn big primary" id="btnStart"><span data-i18n="start"></span></button>
+      <div class="row">
+        <button class="btn" id="btnHow"><span data-i18n="howto"></span></button>
+        <button class="btn" id="btnRecords"><span data-i18n="records"></span></button>
+      </div>
+      <button class="phase-chip" id="phaseChip"><span data-i18n="phase"></span>：<b id="phaseLabel"></b></button>
+      <p class="privacy" data-i18n="privacy"></p>
+      <p class="ver" id="appVer"></p>
+    </div>
+  </section>
+
+  <!-- あそびかた -->
+  <section id="s-how" class="screen">
+    <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="howto"></h2><span></span></header>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><div class="pose"><img src="assets/chara/dentman_raise.png" alt="" class="anim-lift"><span class="pose-mark up">↑</span></div><p data-i18n="how1"></p></div>
+      <div class="step"><div class="num">2</div><div class="pose"><img src="assets/chara/dentman_brush.png" alt="" class="anim-scrub"><span class="pose-mark">⏱</span></div><p data-i18n="how2"></p></div>
+      <div class="step"><div class="num">3</div><div class="pose"><img src="assets/chara/dentman_raise.png" alt="" class="anim-lift"><span class="pose-mark">🏁</span></div><p data-i18n="how3"></p></div>
+    </div>
+    <p class="tip">💡 <span data-i18n="howTip"></span></p>
+    <div class="practice" id="practiceBox">
+      <div class="cam small" id="camHow"></div>
+      <div class="practice-side"><p id="practiceMsg" data-i18n="practice"></p><div class="ring" id="practiceRing"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fg" id="practiceArc"/></svg><span>↑</span></div></div>
+    </div>
+    <div class="row center"><button class="btn big primary" id="btnHowNext"><span data-i18n="start"></span></button></div>
+  </section>
+
+  <!-- だれかな -->
+  <section id="s-who" class="screen">
+    <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="whoTitle"></h2><span class="phase-tag" id="whoPhase"></span></header>
+    <div class="who-body">
+      <div class="cam mid" id="camWho"><div class="face-guide"></div></div>
+      <div class="who-side">
+        <img class="who-dent" src="assets/chara/dentman_point.png" alt="">
+        <p class="status" id="whoStatus" data-i18n="looking"></p>
+        <div id="whoAsk" class="hidden">
+          <p class="ask-name"><b id="whoName"></b><span data-i18n="isThis"></span></p>
+          <div class="row"><button class="btn primary" id="whoYes"><span data-i18n="yes"></span></button><button class="btn" id="whoNo"><span data-i18n="no"></span></button></div>
+        </div>
+        <div id="whoPick" class="hidden"><p data-i18n="pickWho"></p><div class="pick-list" id="pickList"></div></div>
+        <button class="btn" id="btnNewPlayer"><span>＋ </span><span data-i18n="newPlayer"></span></button>
+        <details class="all-names" open><summary data-i18n="pickWho"></summary><div class="pick-list" id="allNames"></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- とうろく -->
+  <section id="s-reg" class="screen">
+    <header class="bar-top"><button class="btn small" data-go="who"><span data-i18n="back"></span></button><h2 data-i18n="newPlayer"></h2><span></span></header>
+    <div class="who-body">
+      <div class="cam mid" id="camReg"><div class="face-guide"></div></div>
+      <div class="who-side">
+        <label class="field"><span data-i18n="name"></span><input id="regName" maxlength="24" autocomplete="off"></label>
+        <p class="status" id="regStatus" data-i18n="regHint"></p>
+        <div class="dots" id="regDots"></div>
+        <p class="warn hidden" id="regSame"></p>
+        <button class="btn big primary" id="btnReg"><span data-i18n="register"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- みがく -->
+  <section id="s-brush" class="screen dark">
+    <div class="cam full" id="camBrush"><canvas id="overlay"></canvas></div>
+    <div class="hud">
+      <div class="hud-top"><span class="who-chip" id="brushWho"></span><span class="phase-tag" id="brushPhase"></span></div>
+      <div class="timer-wrap">
+        <svg viewBox="0 0 220 220" class="goal-ring"><circle cx="110" cy="110" r="96" class="ring-bg"/><circle cx="110" cy="110" r="96" class="ring-fg" id="goalArc"/></svg>
+        <div class="timer" id="timer">0:00</div>
+        <div class="goal-label" data-i18n="goal"></div>
+      </div>
+      <div class="enemy" id="enemy"><img id="enemyImg" src="assets/chara/mutans_normal.png" alt=""><div class="hp"><i id="hpBar"></i></div><span class="enemy-name" data-i18n="mutans"></span></div>
+      <div class="banner" id="banner"></div>
+      <div class="hold" id="hold"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fg" id="holdArc"/></svg><span>↑</span></div>
+      <div class="staff">
+        <button class="btn small ghost" id="btnManual"><span data-i18n="staffStart"></span></button>
+        <button class="btn small ghost" id="btnQuit"><span data-i18n="quit"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- けっか -->
+  <section id="s-result" class="screen">
+    <div class="sky"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div>
+    <div class="result">
+      <div class="res-chara"><img src="assets/chara/dentman_cheer.png" alt="" class="res-dent"><img id="resMutans" src="assets/chara/mutans_defeated.png" alt="" class="res-mutans"></div>
+      <h1 data-i18n="done"></h1>
+      <div class="stars" id="stars"></div>
+      <p class="label" data-i18n="yourTime"></p>
+      <p class="big-time" id="resTime"></p>
+      <p class="note" id="resNote"></p>
+      <div class="compare" id="resCompare"></div>
+      <div class="row center">
+        <button class="btn big primary" id="btnAgain"><span data-i18n="again"></span></button>
+        <button class="btn big" data-go="title"><span data-i18n="toTitle"></span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- きろく -->
+  <section id="s-records" class="screen">
+    <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="recTitle"></h2><span></span></header>
+    <div class="rec-body">
+      <div class="phase-switch" id="phaseSwitch"></div>
+      <div id="recList"></div>
+      <div class="rec-tools">
+        <button class="btn" id="btnCsv"><span data-i18n="exportCsv"></span></button>
+        <button class="btn" id="btnBackup"><span data-i18n="backupJson"></span></button>
+        <label class="btn"><span data-i18n="restoreJson"></span><input type="file" id="fileRestore" accept="application/json,.json" hidden></label>
+        <button class="btn danger" id="btnWipe"><span data-i18n="wipeAll"></span></button>
+      </div>
+      <p class="privacy" data-i18n="privacy"></p>
+    </div>
+  </section>
+
+  <!-- おとなの確認 -->
+  <div id="gate" class="overlay hidden">
+    <div class="card"><p data-i18n="adultGate"></p><p class="gate-q" id="gateQ"></p><div class="row center" id="gateA"></div><button class="btn small" id="gateCancel"><span data-i18n="cancel"></span></button></div>
+  </div>
+
+  <!-- カメラの失敗など -->
+  <div id="errBox" class="overlay hidden"><div class="card"><p id="errMsg"></p><button class="btn primary" id="errOk"><span data-i18n="ok"></span></button></div></div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "Toothbrush Challenge",
+  "short_name": "Brush",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#0e6fd8",
+  "theme_color": "#0e6fd8",
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

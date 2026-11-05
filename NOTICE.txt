@@ -1,0 +1,13 @@
+DENTMAN's Toothbrush Challenge — third-party components (license texts are in vendor/licenses/)
+
+- MediaPipe Tasks Vision (vendor/vision_bundle.mjs, vendor/wasm/, models/hand_landmarker.task,
+  models/blaze_face_short_range.tflite) — Google LLC, Apache License 2.0
+  https://github.com/google-ai-edge/mediapipe  → vendor/licenses/MediaPipe_Apache-2.0.txt
+- face-api 1.7.15 (vendor/faceapi/face-api.esm.js, models/faceapi/) — Vladimir Mandic, MIT License
+  → vendor/licenses/face-api_MIT.txt. It is a fork of face-api.js by Vincent Mühler (MIT License,
+  https://github.com/justadudewhohacks/face-api.js), whose model weights are used in models/faceapi/.
+  The bundle includes TensorFlow.js (Apache License 2.0, same text as above).
+- Noto Sans Khmer — Copyright 2022 The Noto Project Authors, SIL Open Font License 1.1 → vendor/licenses/OFL_NotoSansKhmer.txt
+- Baloo 2 — Copyright 2019 The Baloo 2 Project Authors, SIL Open Font License 1.1 → vendor/licenses/OFL_Baloo2.txt
+
+DENTMAN / Mr. Mutans characters and illustrations (assets/chara/): all rights reserved by the owner of DENTMAN.
