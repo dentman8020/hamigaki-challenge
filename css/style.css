@@ -296,3 +296,18 @@ body:not(.show-goal) .goal-only { display: none !important; }
 
 /* 狭い画面では案内を左右の絵の間に収め、2行に折る（2026-11-05 紫穂：幅375で絵に食い込んだ） */
 @media (max-width: 720px) { #s-brush .end-hint { white-space: normal; text-align: center; max-width: calc(100vw - 2 * 106px - 12px); bottom: 70px; line-height: 1.35; } }
+
+/* きろく画面：選ぶ・まとめて消す・Excel（2026-11-05） */
+.sel-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; }
+.sel-count { color: #fff; font-weight: 800; min-width: 7em; text-align: center; }
+.person.selected { outline: 5px solid var(--sun); outline-offset: 2px; }
+.person-head .pick { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.person-head .pick input { width: 26px; height: 26px; accent-color: var(--coral); cursor: pointer; }
+.xlsx-box { background: var(--paper); border: 4px solid var(--ink); border-radius: var(--radius); padding: 14px 16px; box-shadow: 0 5px 0 var(--ink); display: flex; flex-direction: column; gap: 10px; font-weight: 800; }
+.xlsx-box h3 { margin: 0; font-size: 20px; }
+.xlsx-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.xlsx-row > span:first-child { min-width: 5em; color: var(--muted); }
+.xlsx-row label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.xlsx-row input[type=radio] { width: 20px; height: 20px; accent-color: var(--coral); }
+.xlsx-row input[type=date] { font: inherit; font-size: 16px; padding: 6px 8px; border: 3px solid var(--ink); border-radius: 12px; user-select: text; }
+.xlsx-preview { color: var(--muted); flex: 1; min-width: 12em; }

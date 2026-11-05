@@ -2,9 +2,10 @@
 import { LANGS, setLang, getLang, t, num, fmtDuration, fmtClock, applyI18n } from './i18n.js';
 import { store, summary, askPersist } from './store.js';
 import { RaiseTimer, CFG } from './gesture.js';
+import { exportXlsx, pickRecords } from './export.js';
 
 const $ = id => document.getElementById(id);
-const APP_VERSION = 'v8 (2026-11-05)';   // sw.js の VERSION と一緒に上げる
+const APP_VERSION = 'v11 (2026-11-06)';   // sw.js の VERSION と一緒に上げる
 const GOAL_MS = 3 * 60 * 1000;   // めやす3分（星3つ）
 const REG_SHOTS = 6;             // 登録で集める顔の枚数
 
@@ -518,6 +519,8 @@ function showResult(rec) {
 }
 
 // ---------- きろく ----------
+const selected = new Set();   // きろく画面で選んでいる人の id（消す・Excel に使う）
+
 function enterRecords() {
   // 指導前／指導後の切り替え（係の人がここで決める）
   const sw = $('phaseSwitch'); sw.innerHTML = '';
@@ -542,14 +545,23 @@ function enterRecords() {
 
   const list = $('recList'); list.innerHTML = '';
   const people = store.people();
+  for (const id of [...selected]) if (!store.person(id)) selected.delete(id);   // 消えた人は選びから外す
+  refreshSelection();
+  $('selBar').classList.toggle('hidden', !people.length);
+  $('xlsxBox').classList.toggle('hidden', !store.records().length);
   if (!people.length) { list.innerHTML = `<p class="empty"></p>`; list.firstChild.textContent = t('noRecords'); return; }
   const maxMs = Math.max(GOAL_MS, ...store.records().map(r => r.ms)) * 1.05;
 
   for (const p of people) {
     const sm = summary(p.id);
-    const card = document.createElement('div'); card.className = 'person';
+    const card = document.createElement('div'); card.className = 'person' + (selected.has(p.id) ? ' selected' : '');
+    card.dataset.id = p.id;
     const head = document.createElement('div'); head.className = 'person-head';
-    const h3 = document.createElement('h3'); h3.textContent = p.name; head.appendChild(h3);
+    const pick = document.createElement('label'); pick.className = 'pick';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = selected.has(p.id); cb.setAttribute('aria-label', `${t('select')} ${p.name}`);
+    cb.onchange = () => { cb.checked ? selected.add(p.id) : selected.delete(p.id); card.classList.toggle('selected', cb.checked); refreshSelection(); };
+    const h3 = document.createElement('h3'); h3.textContent = p.name;
+    pick.append(cb, h3); head.appendChild(pick);
     if (sm.diff !== null) {
       const d = document.createElement('span');
       d.className = 'delta ' + (sm.diff >= 0 ? 'up' : 'down');
@@ -583,12 +595,52 @@ function enterRecords() {
     }
     det.appendChild(tbl);
     const delP = document.createElement('button'); delP.className = 'btn small danger'; delP.textContent = t('deletePerson');
-    delP.onclick = () => { if (confirm(`${p.name}: ${t('confirmDel')}`)) { store.removePerson(p.id); enterRecords(); } };
+    delP.onclick = () => { if (confirm(`${p.name}: ${t('confirmDel')}`)) { store.removePerson(p.id); selected.delete(p.id); enterRecords(); } };
     det.appendChild(delP);
     card.appendChild(det);
     list.appendChild(card);
   }
 }
+
+// 選んでいる人数・Excel の件数の見込みを書き直す
+function refreshSelection() {
+  $('selCount').textContent = t('selectedN', { n: num(selected.size) });
+  $('xSelN').textContent = num(selected.size);
+  $('btnDelSel').disabled = !selected.size; $('btnDelSel').style.opacity = selected.size ? 1 : .5;
+  const opt = xlsxOptions();
+  const recs = pickRecords(opt);
+  $('xPreview').textContent = t('xlsxPreview', { r: num(recs.length), p: num(new Set(recs.map(r => r.personId)).size) });
+}
+function xlsxOptions() {
+  const who = document.querySelector('input[name=xWho]:checked')?.value;
+  return { personIds: who === 'sel' ? [...selected] : null, from: $('xFrom').value, to: $('xTo').value };
+}
+$('btnSelAll').onclick = () => { store.people().forEach(p => selected.add(p.id)); enterRecords(); };
+$('btnSelNone').onclick = () => { selected.clear(); enterRecords(); };
+$('btnDelSel').onclick = () => {
+  if (!selected.size) { alert(t('noneSelected')); return; }
+  const names = [...selected].map(id => store.person(id)?.name).filter(Boolean);
+  const sep = getLang() === 'ja' ? '、' : ', ';
+  if (!confirm(`${t('confirmDelPeople', { n: num(names.length) })}\n${names.join(sep)}`)) return;
+  store.removePeople([...selected]); selected.clear(); enterRecords();
+};
+$('btnDelAllPeople').onclick = () => {
+  const n = store.people().length; if (!n) return;
+  if (confirm(t('confirmDelAllPeople', { n: num(n) })) && confirm(t('confirmDel'))) { store.removeAllPeople(); selected.clear(); enterRecords(); }
+};
+document.querySelectorAll('input[name=xWho]').forEach(r => r.onchange = refreshSelection);
+$('xFrom').onchange = refreshSelection; $('xTo').onchange = refreshSelection;
+$('btnDateClear').onclick = () => { $('xFrom').value = ''; $('xTo').value = ''; refreshSelection(); };
+$('btnXlsx').onclick = async () => {
+  const opt = xlsxOptions();
+  if (opt.personIds && !opt.personIds.length) { alert(t('noneSelected')); return; }
+  const btn = $('btnXlsx'); btn.disabled = true;
+  try {
+    const r = await exportXlsx({ ...opt, appVersion: APP_VERSION });
+    if (!r.count) alert(t('noMatch'));
+  } catch (e) { console.error(e); alert(t('xlsxError')); }
+  finally { btn.disabled = false; }
+};
 
 function download(name, text, type) {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -600,10 +652,10 @@ $('btnCsv').onclick = () => download(`hamigaki_records_${stamp()}.csv`, store.cs
 $('btnBackup').onclick = () => download(`hamigaki_backup_${stamp()}.json`, store.backup(), 'application/json');
 $('fileRestore').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
-  try { store.restore(await f.text()); applyGoalSetting(); enterRecords(); } catch (err) { alert(t('restoreError')); }
+  try { store.restore(await f.text()); selected.clear(); applyGoalSetting(); enterRecords(); } catch (err) { alert(t('restoreError')); }
   e.target.value = '';
 };
-$('btnWipe').onclick = () => { if (confirm(t('confirmDel')) && confirm(t('confirmDel'))) { store.wipe(); applyGoalSetting(); enterRecords(); } };
+$('btnWipe').onclick = () => { if (confirm(t('confirmDel')) && confirm(t('confirmDel'))) { store.wipe(); selected.clear(); applyGoalSetting(); enterRecords(); } };
 
 // ---------- 起動 ----------
 setLang(store.settings.lang || 'km');

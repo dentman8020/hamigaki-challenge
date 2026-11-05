@@ -7,6 +7,8 @@ DENTMAN's Toothbrush Challenge — third-party components (license texts are in 
   → vendor/licenses/face-api_MIT.txt. It is a fork of face-api.js by Vincent Mühler (MIT License,
   https://github.com/justadudewhohacks/face-api.js), whose model weights are used in models/faceapi/.
   The bundle includes TensorFlow.js (Apache License 2.0, same text as above).
+- SheetJS Community Edition 0.20.3 (vendor/sheetjs/xlsx.mini.min.js) — SheetJS LLC, Apache License 2.0
+  → vendor/licenses/SheetJS_Apache-2.0.txt (used only to write Excel files on the device)
 - Noto Sans Khmer — Copyright 2022 The Noto Project Authors, SIL Open Font License 1.1 → vendor/licenses/OFL_NotoSansKhmer.txt
 - Baloo 2 — Copyright 2019 The Baloo 2 Project Authors, SIL Open Font License 1.1 → vendor/licenses/OFL_Baloo2.txt
 

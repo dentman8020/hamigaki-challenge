@@ -53,6 +53,16 @@ export const store = {
     save();
   },
 
+  // 選んだ人をまとめて消す（その人の記録も）
+  removePeople(ids) {
+    const set = new Set(ids);
+    db.people = db.people.filter(p => !set.has(p.id));
+    db.records = db.records.filter(r => !set.has(r.personId));
+    save();
+  },
+  // 登録した人と記録を全部消す。設定（言語・指導前／後・目安）は残す
+  removeAllPeople() { db.people = []; db.records = []; save(); },
+
   records(personId) { return personId ? db.records.filter(r => r.personId === personId) : db.records; },
   addRecord(r) { const rec = { id: uid(), at: Date.now(), ...r }; db.records.push(rec); save(); return rec; },
   removeRecord(id) { db.records = db.records.filter(r => r.id !== id); save(); },

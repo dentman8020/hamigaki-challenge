@@ -98,7 +98,7 @@ const T = {
   restoreJson:  { ja: '控えから戻す', en: 'Restore backup', km: 'ស្តារពីច្បាប់ចម្លង' },
   deletePerson: { ja: 'この人を消す', en: 'Delete this person', km: 'លុបមនុស្សនេះ' },
   deleteRecord: { ja: '消す', en: 'Delete', km: 'លុប' },
-  wipeAll:      { ja: 'すべて消す', en: 'Delete everything', km: 'លុបទាំងអស់' },
+  wipeAll:      { ja: '設定も含めてすべて消す', en: 'Erase everything (incl. settings)', km: 'លុបទាំងអស់ រួមទាំងការកំណត់' },
   confirmDel:   { ja: '本当に消しますか？元に戻せません', en: 'Really delete? This cannot be undone.', km: 'ពិតជាចង់លុបមែនទេ? មិនអាចយកមកវិញបានទេ។' },
   adultGate:    { ja: 'おとなの人へ：こたえを えらんでください', en: 'For adults: choose the answer', km: 'សម្រាប់មនុស្សពេញវ័យ៖ សូមជ្រើសរើសចម្លើយ' },
   privacy:      { ja: '顔の情報は この端末の中だけに保存し、外には送りません。', en: 'Face data is stored only on this device and never sent anywhere.', km: 'ទិន្នន័យមុខត្រូវបានរក្សាទុកតែក្នុងឧបករណ៍នេះប៉ុណ្ណោះ ហើយមិនផ្ញើទៅកន្លែងណាទេ។' },
@@ -111,6 +111,49 @@ const T = {
   ended_manual: { ja: '手で終了', en: 'Stopped by staff', km: 'បញ្ឈប់ដោយបុគ្គលិក' },
   ended_lost:   { ja: '中断（カメラから外れた）', en: 'Left the camera', km: 'ចាកចេញពីកាមេរ៉ា' },
   ended_timeout:{ ja: '10分で自動終了', en: 'Auto-stopped at 10 min', km: 'បញ្ឈប់ស្វ័យប្រវត្តិ ១០ នាទី' },
+  selectAll:    { ja: '全員を選ぶ', en: 'Select all', km: 'ជ្រើសរើសទាំងអស់' },
+  selectNone:   { ja: '選ぶのをやめる', en: 'Clear selection', km: 'លុបការជ្រើសរើស' },
+  selectedN:    { ja: '{n}人を選択中', en: '{n} selected', km: 'បានជ្រើសរើស {n} នាក់' },
+  select:       { ja: '選ぶ', en: 'Select', km: 'ជ្រើសរើស' },
+  deleteSelected:{ ja: '選んだ人を消す', en: 'Delete selected people', km: 'លុបមនុស្សដែលបានជ្រើសរើស' },
+  deleteAllPeople:{ ja: '登録した人を全部消す', en: 'Delete all registered people', km: 'លុបមនុស្សដែលបានចុះឈ្មោះទាំងអស់' },
+  confirmDelPeople:{ ja: '次の{n}人と、その記録を消します。元に戻せません：', en: 'Delete these {n} people and their records? This cannot be undone:', km: 'លុបមនុស្ស {n} នាក់នេះ និងកំណត់ត្រារបស់ពួកគេ? មិនអាចយកមកវិញបានទេ៖' },
+  confirmDelAllPeople:{ ja: '登録した{n}人と、すべての記録を消します（設定は残ります）。元に戻せません', en: 'Delete all {n} registered people and all records (settings are kept)? This cannot be undone.', km: 'លុបមនុស្សទាំង {n} នាក់ និងកំណត់ត្រាទាំងអស់ (ការកំណត់នៅដដែល)? មិនអាចយកមកវិញបានទេ។' },
+  noneSelected: { ja: 'まだ誰も選んでいません', en: 'No one is selected', km: 'មិនទាន់បានជ្រើសរើសនរណាម្នាក់ទេ' },
+  xlsxTitle:    { ja: 'Excel に書き出す', en: 'Export to Excel', km: 'នាំចេញទៅ Excel' },
+  xlsxWho:      { ja: '人', en: 'People', km: 'មនុស្ស' },
+  xlsxSelected: { ja: '選んだ人', en: 'Selected people', km: 'មនុស្សដែលបានជ្រើសរើស' },
+  dateFrom:     { ja: 'から', en: 'From', km: 'ពី' },
+  dateTo:       { ja: 'まで', en: 'To', km: 'ដល់' },
+  dateClear:    { ja: '期間を消す', en: 'Clear dates', km: 'លុបកាលបរិច្ឆេទ' },
+  exportXlsx:   { ja: 'Excel に書き出す', en: 'Export Excel', km: 'នាំចេញ Excel' },
+  xlsxPreview:  { ja: '書き出すのは {r} 件（{p}人）', en: '{r} records ({p} people) will be exported', km: 'នឹងនាំចេញ {r} កំណត់ត្រា ({p} នាក់)' },
+  noMatch:      { ja: '条件に合う記録がありません', en: 'No records match', km: 'គ្មានកំណត់ត្រាដែលត្រូវនឹងលក្ខខណ្ឌទេ' },
+  xlsxError:    { ja: 'Excel を作れませんでした', en: 'Could not create the Excel file', km: 'មិនអាចបង្កើតឯកសារ Excel បានទេ' },
+  xNoRec:       { ja: '記録なし', en: 'no records', km: 'គ្មានកំណត់ត្រា' },
+  xAll:         { ja: '全員', en: 'Everyone', km: 'ទាំងអស់គ្នា' },
+  xPeriod:      { ja: '期間', en: 'Period', km: 'រយៈពេល' },
+  xPersonId:    { ja: '人のID', en: 'Person ID', km: 'លេខសម្គាល់' },
+  xName:        { ja: '名前', en: 'Name', km: 'ឈ្មោះ' },
+  xPhase:       { ja: '指導前／後', en: 'Before / after lesson', km: 'មុន / ក្រោយពេលរៀន' },
+  xDate:        { ja: '日付', en: 'Date', km: 'កាលបរិច្ឆេទ' },
+  xTime:        { ja: '時刻', en: 'Time', km: 'ម៉ោង' },
+  xSeconds:     { ja: 'みがいた秒数', en: 'Brushing (s)', km: 'រយៈពេលដុស (វិនាទី)' },
+  xMouthSec:    { ja: '手が口もとにあった秒数', en: 'Hand near mouth (s)', km: 'ដៃនៅជិតមាត់ (វិនាទី)' },
+  xOutSec:      { ja: 'カメラから外れた秒数', en: 'Out of view (s)', km: 'ចេញពីកាមេរ៉ា (វិនាទី)' },
+  xEndedBy:     { ja: '終わり方', en: 'Ended by', km: 'របៀបបញ្ចប់' },
+  xBeforeN:     { ja: '指導前の回数', en: 'Before: times', km: 'មុន៖ ចំនួនដង' },
+  xBeforeAvg:   { ja: '指導前の平均（秒）', en: 'Before: average (s)', km: 'មុន៖ មធ្យមភាគ (វិនាទី)' },
+  xAfterN:      { ja: '指導後の回数', en: 'After: times', km: 'ក្រោយ៖ ចំនួនដង' },
+  xAfterAvg:    { ja: '指導後の平均（秒）', en: 'After: average (s)', km: 'ក្រោយ៖ មធ្យមភាគ (វិនាទី)' },
+  xChange:      { ja: '変化（秒）', en: 'Change (s)', km: 'ការប្រែប្រួល (វិនាទី)' },
+  xExportedAt:  { ja: '書き出した日時', en: 'Exported at', km: 'ពេលនាំចេញ' },
+  xPeople:      { ja: '人', en: 'People', km: 'មនុស្ស' },
+  xCount:       { ja: '記録の件数', en: 'Records', km: 'ចំនួនកំណត់ត្រា' },
+  xApp:         { ja: 'アプリ', en: 'App', km: 'កម្មវិធី' },
+  xSheetRecords:   { ja: '記録', en: 'Records', km: 'កំណត់ត្រា' },
+  xSheetSummary:   { ja: 'まとめ', en: 'Summary', km: 'សេចក្តីសង្ខេប' },
+  xSheetConditions:{ ja: '条件', en: 'Conditions', km: 'លក្ខខណ្ឌ' },
   modelError:   { ja: 'よみこみに しっぱいしました', en: 'Failed to load', km: 'ផ្ទុកមិនបានសម្រេច' },
 };
 
@@ -120,7 +163,11 @@ export function setLang(code) {
   document.documentElement.lang = lang;
 }
 export function getLang() { return lang; }
-export function t(key) { return T[key]?.[lang] ?? T[key]?.en ?? key; }
+export function t(key, vars) {
+  let s = T[key]?.[lang] ?? T[key]?.en ?? key;
+  if (vars) for (const [k, v] of Object.entries(vars)) s = s.split('{' + k + '}').join(String(v));
+  return s;
+}
 
 // クメール数字（០-៩）。クメール語の画面では時間もクメール数字で見せる
 const KM_DIGITS = '០១២៣៤៥៦៧៨៩';

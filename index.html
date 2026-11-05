@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0e6fd8">
+<!-- 検索に出にくくする（公開先と凍結版を同じ中身にするため、アプリ側に入れておく。2026-11-06 葵） -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Toothbrush Challenge</title>
@@ -140,7 +141,29 @@
     <div class="rec-body">
       <div class="phase-switch" id="phaseSwitch"></div>
       <div class="phase-switch" id="goalSwitch"></div>
+      <div class="sel-bar" id="selBar">
+        <button class="btn small" id="btnSelAll"><span data-i18n="selectAll"></span></button>
+        <button class="btn small" id="btnSelNone"><span data-i18n="selectNone"></span></button>
+        <span class="sel-count" id="selCount"></span>
+        <button class="btn small danger" id="btnDelSel"><span data-i18n="deleteSelected"></span></button>
+        <button class="btn small danger" id="btnDelAllPeople"><span data-i18n="deleteAllPeople"></span></button>
+      </div>
       <div id="recList"></div>
+      <div class="xlsx-box" id="xlsxBox">
+        <h3 data-i18n="xlsxTitle"></h3>
+        <div class="xlsx-row"><span data-i18n="xlsxWho"></span>
+          <label><input type="radio" name="xWho" value="all" checked> <span data-i18n="xAll"></span></label>
+          <label><input type="radio" name="xWho" value="sel"> <span data-i18n="xlsxSelected"></span>（<span id="xSelN">0</span>）</label>
+        </div>
+        <div class="xlsx-row"><span data-i18n="xPeriod"></span>
+          <label><span data-i18n="dateFrom"></span> <input type="date" id="xFrom"></label>
+          <label><span data-i18n="dateTo"></span> <input type="date" id="xTo"></label>
+          <button class="btn small" id="btnDateClear"><span data-i18n="dateClear"></span></button>
+        </div>
+        <div class="xlsx-row"><span class="xlsx-preview" id="xPreview"></span>
+          <button class="btn primary" id="btnXlsx"><span data-i18n="exportXlsx"></span></button>
+        </div>
+      </div>
       <div class="rec-tools">
         <button class="btn" id="btnCsv"><span data-i18n="exportCsv"></span></button>
         <button class="btn" id="btnBackup"><span data-i18n="backupJson"></span></button>

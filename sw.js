@@ -1,13 +1,13 @@
 // https で置いた時だけ使う。1回開けば、あとは電波が無くても動くように一式を端末に控える。
 // 中身を変えたら VERSION を上げる（古い控えが消える）。
-const VERSION = 'v8-20261105';   // app.js の APP_VERSION と一緒に上げる
+const VERSION = 'v11-20261106';   // app.js の APP_VERSION と一緒に上げる
 const FILES = [
   './', 'index.html', 'NOTICE.txt',
   'vendor/licenses/MediaPipe_Apache-2.0.txt', 'vendor/licenses/face-api_MIT.txt', 'vendor/licenses/OFL_NotoSansKhmer.txt', 'vendor/licenses/OFL_Baloo2.txt', 'css/style.css', 'css/fonts.css',
   'vendor/fonts/Baloo2-600-latin.woff2', 'vendor/fonts/Baloo2-800-latin.woff2',
   'vendor/fonts/NotoSansKhmer-500-khmer.woff2', 'vendor/fonts/NotoSansKhmer-800-khmer.woff2',
   'vendor/fonts/NotoSansKhmer-500-latin.woff2', 'vendor/fonts/NotoSansKhmer-800-latin.woff2', 'manifest.webmanifest', 'assets/icon.svg',
-  'js/app.js', 'js/i18n.js', 'js/store.js', 'js/gesture.js', 'js/vision.js',
+  'js/app.js', 'js/export.js', 'vendor/sheetjs/xlsx.mini.min.js', 'vendor/licenses/SheetJS_Apache-2.0.txt', 'js/i18n.js', 'js/store.js', 'js/gesture.js', 'js/vision.js',
   'vendor/vision_bundle.mjs', 'vendor/faceapi/face-api.esm.js',
   'vendor/wasm/vision_wasm_internal.js', 'vendor/wasm/vision_wasm_internal.wasm',
   'vendor/wasm/vision_wasm_nosimd_internal.js', 'vendor/wasm/vision_wasm_nosimd_internal.wasm',
