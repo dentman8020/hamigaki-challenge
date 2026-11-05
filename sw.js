@@ -1,6 +1,6 @@
 // https で置いた時だけ使う。1回開けば、あとは電波が無くても動くように一式を端末に控える。
 // 中身を変えたら VERSION を上げる（古い控えが消える）。
-const VERSION = 'v5-20261104';   // app.js の APP_VERSION と一緒に上げる
+const VERSION = 'v8-20261105';   // app.js の APP_VERSION と一緒に上げる
 const FILES = [
   './', 'index.html', 'NOTICE.txt',
   'vendor/licenses/MediaPipe_Apache-2.0.txt', 'vendor/licenses/face-api_MIT.txt', 'vendor/licenses/OFL_NotoSansKhmer.txt', 'vendor/licenses/OFL_Baloo2.txt', 'css/style.css', 'css/fonts.css',
@@ -13,6 +13,7 @@ const FILES = [
   'vendor/wasm/vision_wasm_nosimd_internal.js', 'vendor/wasm/vision_wasm_nosimd_internal.wasm',
   'assets/chara/dentman_raise.png', 'assets/chara/dentman_brush.png', 'assets/chara/dentman_cheer.png', 'assets/chara/dentman_point.png',
   'assets/chara/mutans_normal.png', 'assets/chara/mutans_weak.png', 'assets/chara/mutans_defeated.png',
+  'assets/chara/dentman_cheer_a.png', 'assets/chara/dentman_cheer_b.png', 'assets/chara/dentman_wave_a.png', 'assets/chara/dentman_wave_b.png', 'assets/chara/dentman_raise_v2.png', 'assets/chara/mutans_hp4.png', 'assets/chara/mutans_hp3.png', 'assets/chara/mutans_hp2.png', 'assets/chara/mutans_hp1.png', 'assets/chara/mutans_hp0.png',
   'models/hand_landmarker.task', 'models/blaze_face_short_range.tflite',
   'models/faceapi/tiny_face_detector_model-weights_manifest.json', 'models/faceapi/tiny_face_detector_model.bin',
   'models/faceapi/face_landmark_68_model-weights_manifest.json', 'models/faceapi/face_landmark_68_model.bin',

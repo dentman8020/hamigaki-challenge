@@ -247,3 +247,52 @@ h2 { font-size: clamp(18px, 3vw, 26px); margin: 0; color: var(--paper); text-ali
 @media (max-width: 720px) { .enemy { bottom: 80px; width: 96px; } .who-dent { height: 110px; } }
 
 .ver { color: rgba(255,255,255,.7); font-size: 12px; margin: 0; }
+
+/* ---------- 磨いている間の応援とミュータンスくん（2026-11-05 ボス「デンタマンが応援して、ミュータンスが弱っていく」） ---------- */
+/* 目安（時計・3分の輪・体力の棒・星）は、係の人が「見せる」にした時だけ。最初は隠す＝自分で終わりを決めさせる */
+body:not(.show-goal) .goal-only { display: none !important; }
+.cheer { position: absolute; left: 14px; bottom: 64px; width: clamp(120px, 18vw, 200px); pointer-events: none; }
+.cheer img { width: 100%; filter: drop-shadow(0 4px 0 rgba(0,0,0,.35)); transform-origin: 50% 100%; }
+.cheer.go img { animation: hop .76s ease-in-out infinite; }
+@keyframes hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 30% { transform: translateY(-10px) scale(.98, 1.03); } 55% { transform: translateY(0) scale(1.03, .97); } }
+.enemy { overflow: visible; }
+.enemy img { transform-origin: 50% 100%; }
+.enemy.scrub img { animation: wobble 1.2s ease-in-out infinite; }
+@keyframes wobble { 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+.enemy .foam { position: absolute; inset: 0 0 20% 0; pointer-events: none; opacity: 0; transition: opacity .5s; }
+.enemy.scrub .foam { opacity: 1; }
+.enemy .foam i { position: absolute; bottom: 10%; width: 22%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.55) 55%, rgba(190,235,255,.25)); border: 2px solid rgba(255,255,255,.9); animation: foamUp 2.4s ease-in infinite; }
+.enemy .foam i:nth-child(1) { left: 5%;  animation-delay: 0s; }
+.enemy .foam i:nth-child(2) { left: 30%; animation-delay: .4s; width: 16%; }
+.enemy .foam i:nth-child(3) { left: 60%; animation-delay: .8s; }
+.enemy .foam i:nth-child(4) { left: 80%; animation-delay: 1.2s; width: 14%; }
+.enemy .foam i:nth-child(5) { left: 18%; animation-delay: 1.6s; width: 12%; }
+.enemy .foam i:nth-child(6) { left: 70%; animation-delay: 2s; width: 18%; }
+@keyframes foamUp { 0% { transform: translateY(0) scale(.4); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-160%) scale(1.1); opacity: 0; } }
+.res-mutans.down { animation: shake .35s 2; }
+@media (max-width: 720px) { .cheer { width: 100px; bottom: 58px; } }
+
+/* 並び（2026-11-05）：キャラは左右の下の隅、文字の帯はその間。顔の前に物を置かない */
+#s-brush .cheer { left: 14px; bottom: 70px; }
+#s-brush .enemy { right: 14px; bottom: 70px; width: clamp(110px, 17vw, 190px); }
+#s-brush .banner { position: absolute; left: 50%; transform: translateX(-50%); bottom: 78px; margin: 0;
+  max-width: calc(100vw - 2 * clamp(120px, 18vw, 200px) - 48px); font-size: clamp(16px, 2.8vw, 30px); padding: 8px 18px; }
+#s-brush .banner.go { animation: none; }
+@media (max-width: 720px) {
+  #s-brush .cheer, #s-brush .enemy { width: 92px; bottom: 64px; }
+  #s-brush .enemy-name { font-size: 11px; }
+  #s-brush .banner { top: 64px; bottom: auto; max-width: calc(100vw - 28px); }
+}
+#s-brush .cheer { width: clamp(130px, 21vw, 250px); }
+#s-brush .enemy { width: clamp(120px, 20vw, 240px); }
+#s-brush .banner { max-width: calc(100vw - 2 * clamp(130px, 21vw, 250px) - 48px); }
+@media (max-width: 720px) { #s-brush .cheer, #s-brush .enemy { width: 92px; } #s-brush .banner { max-width: calc(100vw - 28px); } }
+
+/* 終わり方の小さな案内（点滅させない・磨いている間ずっと同じ） */
+#s-brush .end-hint { position: absolute; left: 50%; transform: translateX(-50%); bottom: 22px; color: #fff; font-weight: 800; font-size: clamp(13px, 1.6vw, 17px);
+  text-shadow: 0 2px 0 var(--ink); opacity: 0; pointer-events: none; white-space: nowrap; }
+#s-brush .end-hint.on { opacity: .9; }
+@media (max-width: 720px) { #s-brush .end-hint { bottom: 120px; } }
+
+/* 狭い画面では案内を左右の絵の間に収め、2行に折る（2026-11-05 紫穂：幅375で絵に食い込んだ） */
+@media (max-width: 720px) { #s-brush .end-hint { white-space: normal; text-align: center; max-width: calc(100vw - 2 * 106px - 12px); bottom: 70px; line-height: 1.35; } }

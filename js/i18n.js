@@ -7,6 +7,13 @@ export const LANGS = [
 
 const T = {
   title:        { ja: 'デンタマンの はみがき チャレンジ', en: 'DENTMAN’s Toothbrush Challenge', km: 'ហ្គេមដុសធ្មេញជាមួយ DENTMAN' },
+  endHint:      { ja: 'おわったら はブラシを うえに', en: 'Done? Raise your toothbrush', km: 'រួចហើយ? លើកច្រាសដុសធ្មេញឡើង' },
+  cheer1:       { ja: 'がんばれ！', en: 'You can do it!', km: 'ព្យាយាមណា!' },
+  cheer2:       { ja: 'いいぞ！その ちょうし！', en: 'Great, keep going!', km: 'ល្អណាស់! បន្តទៀត!' },
+  cheer3:       { ja: 'ミュータンスくんが よわってきた！', en: 'Mr. Mutans is getting weaker!', km: 'Mr. Mutans កាន់តែខ្សោយហើយ!' },
+  showGoal:     { ja: '時計とめやす（3分・星）', en: 'Clock and goal (3 min, stars)', km: 'នាឡិកា និងគោលដៅ (៣ នាទី ផ្កាយ)' },
+  goalOn:       { ja: '見せる', en: 'Show', km: 'បង្ហាញ' },
+  goalOff:      { ja: '見せない（自分で終わりを決める）', en: 'Hide (child decides when to stop)', km: 'លាក់ (កុមារសម្រេចចិត្តឈប់ដោយខ្លួនឯង)' },
   mutans:       { ja: 'ミュータンスくん', en: 'Mr. Mutans', km: 'Mr. Mutans' },
   beatMutans:   { ja: 'みがいて ミュータンスくんを やっつけよう！', en: 'Brush to beat Mr. Mutans!', km: 'ដុសធ្មេញ ដើម្បីកម្ចាត់ Mr. Mutans!' },
   mutansRan:    { ja: 'ミュータンスくんが にげていった！', en: 'Mr. Mutans ran away!', km: 'Mr. Mutans បានរត់គេចខ្លួនហើយ!' },
@@ -56,6 +63,7 @@ const T = {
   keepUp:       { ja: 'そのまま！', en: 'Hold it!', km: 'កាន់ឱ្យនៅដដែល!' },
   lowerToBrush: { ja: 'おろして みがきはじめよう！', en: 'Bring it down and start brushing!', km: 'ដាក់ចុះ ហើយចាប់ផ្តើមដុស!' },
   brushing:     { ja: 'みがいているよ', en: 'Brushing', km: 'កំពុងដុសធ្មេញ' },
+  // raiseToEnd は v7 から磨く画面の帯では使わない（やめる合図になるため）。言い回しの控えとして残す
   raiseToEnd:   { ja: 'おわったら はブラシを うえに あげてね', en: 'When you finish, raise your toothbrush up', km: 'ពេលដុសរួច សូមលើកច្រាសដុសធ្មេញឡើង' },
   tooEarly:     { ja: 'まだ はじまった ばかりだよ', en: 'You just started!', km: 'ទើបតែចាប់ផ្តើមទេ!' },
   outOfView:    { ja: 'カメラに もどってきてね', en: 'Come back to the camera', km: 'សូមត្រឡប់មកមុខកាមេរ៉ាវិញ' },

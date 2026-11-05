@@ -4,7 +4,7 @@ import { store, summary, askPersist } from './store.js';
 import { RaiseTimer, CFG } from './gesture.js';
 
 const $ = id => document.getElementById(id);
-const APP_VERSION = 'v5 (2026-11-04)';   // sw.js の VERSION と一緒に上げる
+const APP_VERSION = 'v8 (2026-11-05)';   // sw.js の VERSION と一緒に上げる
 const GOAL_MS = 3 * 60 * 1000;   // めやす3分（星3つ）
 const REG_SHOTS = 6;             // 登録で集める顔の枚数
 
@@ -113,6 +113,9 @@ function renderLangs() {
     box.appendChild(b);
   }
 }
+// 時計とめやす（3分・星）を見せるか。最初は見せない＝子どもが自分で終わりを決めた時間を測る
+//（2026-11-05 ボス「自分が歯磨きし終わったとおもったら歯ブラシを上に上げる」）
+function applyGoalSetting() { document.body.classList.toggle('show-goal', !!store.settings.showGoal); }
 function phaseText(p = store.settings.phase) { return t(p === 'after' ? 'after' : 'before'); }
 function refreshTexts() {
   applyI18n();
@@ -317,7 +320,8 @@ async function enterBrush() {
   setArc($('goalArc'), 0, 603);
   $('goalArc').parentElement.classList.remove('reached');
   banner(current.name + t('hello'));
-  enemyStage = ''; $('enemy').classList.remove('gone', 'hit'); $('enemy')._tick = -1; updateEnemy(0, 'WAIT_START');
+  enemyStage = ''; $('enemy').classList.remove('gone', 'hit', 'scrub'); $('enemy')._tick = -1; updateEnemy(0, 'WAIT_START');
+  updateCheer(0, 'WAIT_START', 0);
   try { await ensureReady(); } catch { return; }
   if (my !== loopId) return;
   mountVideo('camBrush');
@@ -362,9 +366,12 @@ async function enterBrush() {
       if (!seen && now - timer.lastSeenAt > 3000) banner(t('outOfView'));
       else if (timer.raisingEarly(now)) banner(t('tooEarly'));
       else if (prog > 0) banner(t('keepUp'), 'go');
-      else if (el >= GOAL_MS) banner(t('mutansRan') + ' ' + t('raiseToEnd'), 'brushing');
-      else if (el > 20000 && Math.floor(el / 8000) % 2) banner(t('raiseToEnd'), 'brushing');
-      else banner(t('beatMutans'), 'brushing');
+      else {
+        // 応援の言葉を順に。3分などの時間の合図は出さない（終わりは子どもが決める）
+        // 「おわったら あげてね」は帯で繰り返すと、やめる合図になる（2026-11-05 紫穂・葵）。下の小さな案内に常に出す
+        const k = Math.floor(el / 6000) % 3;
+        banner(t(['beatMutans', 'cheer1', el > 30000 ? 'cheer3' : 'cheer2'][k]), 'brushing');
+      }
     }
     const el = timer.elapsed(now);
     $('timer').textContent = fmtClock(el);
@@ -372,6 +379,8 @@ async function enterBrush() {
     setArc($('goalArc'), el / GOAL_MS, 603);
     $('goalArc').parentElement.classList.toggle('reached', el >= GOAL_MS);
     updateEnemy(el, st);
+    updateCheer(el, st, now);
+    $('endHint').classList.toggle('on', st === 'BRUSHING');
 
     drawOverlay(ctx, canvas, fr, timer);
     nextFrame(tick);
@@ -379,24 +388,49 @@ async function enterBrush() {
   tick();
 }
 
-// ミュータンスくん：3分で体力が0になる。半分を切ったら泡まみれ、0で逃げていく
+// 絵のコマ。新しいコマ（薫に依頼中）が無ければ、今ある絵で代わりにする
+const CHARA = 'assets/chara/';
+const FALLBACK = {
+  dentman_raise_v2: 'dentman_raise', dentman_cheer_a: 'dentman_cheer', dentman_cheer_b: 'dentman_cheer',
+  dentman_wave_a: 'dentman_point', dentman_wave_b: 'dentman_point',
+  mutans_hp4: 'mutans_normal', mutans_hp3: 'mutans_weak', mutans_hp2: 'mutans_weak', mutans_hp1: 'mutans_weak', mutans_hp0: 'mutans_weak',
+};
+function setFrame(img, name) {
+  if (img.dataset.frame === name) return;
+  img.dataset.frame = name;
+  img.onerror = () => { const f = FALLBACK[name]; if (f && !img.src.endsWith(f + '.png')) img.src = CHARA + f + '.png'; };
+  img.src = CHARA + name + '.png';
+}
+
+// ミュータンスくん：磨いている時間とともに弱っていく（4段階）。磨いている間は0にならない
+//（0になって逃げるのは、子どもが歯ブラシを上げて終わった後＝けっか画面）
 let enemyStage = '';
 function updateEnemy(el, st) {
-  const hp = Math.max(0, 1 - el / GOAL_MS);
-  $('hpBar').style.width = (hp * 100).toFixed(1) + '%';
-  const stage = hp <= 0 ? 'defeated' : hp < 0.5 ? 'weak' : 'normal';
   const enemy = $('enemy');
+  const brushing = st === 'BRUSHING';
+  enemy.classList.toggle('scrub', brushing);
+  $('hpBar').style.width = (Math.max(0, 1 - el / GOAL_MS) * 100).toFixed(1) + '%';   // 目安を見せる時だけ出る
+  const stage = !brushing ? 'mutans_hp4' : el < 20000 ? 'mutans_hp4' : el < 45000 ? 'mutans_hp3' : el < 80000 ? 'mutans_hp2' : 'mutans_hp1';
   if (stage !== enemyStage) {
     enemyStage = stage;
-    $('enemyImg').src = `assets/chara/mutans_${stage}.png`;
-    if (stage !== 'normal') { enemy.classList.remove('hit'); void enemy.offsetWidth; enemy.classList.add('hit'); }
-    if (stage === 'defeated') setTimeout(() => enemy.classList.add('gone'), 1200);
+    setFrame($('enemyImg'), stage);
+    if (brushing && el > 1000) { enemy.classList.remove('hit'); void enemy.offsetWidth; enemy.classList.add('hit'); }
   }
-  // 磨いている間は、10秒ごとに小さく揺れる（効いている合図）
-  if (st === 'BRUSHING' && stage !== 'defeated' && Math.floor(el / 10000) !== enemy._tick) {
-    enemy._tick = Math.floor(el / 10000);
+  // 5秒ごとに「効いた」揺れ
+  if (brushing && Math.floor(el / 5000) !== enemy._tick) {
+    enemy._tick = Math.floor(el / 5000);
     if (el > 1000) { enemy.classList.remove('hit'); void enemy.offsetWidth; enemy.classList.add('hit'); }
   }
+}
+
+// デンタマン：始まる前は「掲げる」手本、磨いている間は応援（2コマを交互に・6秒ごとにポーズを替える）
+function updateCheer(el, st, now) {
+  const box = $('cheer'), img = $('cheerImg');
+  const brushing = st === 'BRUSHING';
+  box.classList.toggle('go', brushing);
+  if (!brushing) { setFrame(img, 'dentman_raise_v2'); return; }
+  const pose = Math.floor(el / 6000) % 2 ? 'dentman_wave' : 'dentman_cheer';
+  setFrame(img, `${pose}_${Math.floor(now / 380) % 2 ? 'b' : 'a'}`);
 }
 
 // 顔の上に「ここより上にあげる」線、手の点を描く（文字は描かない＝鏡にすると読めないので）
@@ -453,14 +487,21 @@ function showResult(rec) {
   $('resTime').textContent = fmtDuration(rec.ms);
   const n = rec.ms >= GOAL_MS ? 3 : rec.ms >= 120000 ? 2 : rec.ms >= 60000 ? 1 : 0;
   $('stars').innerHTML = [0, 1, 2].map(i => `<span class="${i < n ? 'on' : ''}">⭐</span>`).join('');
-  const ran = rec.ms >= GOAL_MS;
+  // 自分で終えた（掲げた・係の人が止めた）なら、ミュータンスくんは倒れてから逃げる
+  const ran = rec.endedBy === 'gesture' || rec.endedBy === 'manual';
   const rm = $('resMutans');
-  rm.src = `assets/chara/mutans_${ran ? 'defeated' : 'weak'}.png`;
-  rm.classList.toggle('run', ran);
-  $('resNote').textContent = ran ? `${t('goalReached')} ${t('mutansRan')}` : rec.endedBy === 'lost' ? t('endedLost') : rec.endedBy === 'timeout' ? t('endedTimeout') : t('mutansLeft');
+  rm.classList.remove('run', 'down');
+  if (ran) { setFrame(rm, 'mutans_hp0'); void rm.offsetWidth; rm.classList.add('down'); }
+  else setFrame(rm, enemyStage || 'mutans_hp4');   // 中断・10分で止まった時は倒さず、止まった時の段のまま（2026-11-05 葵）
+  if (ran) setTimeout(() => { setFrame(rm, 'mutans_defeated'); rm.classList.add('run'); }, 900);
+  const goal = !!store.settings.showGoal;
+  $('resNote').textContent = rec.endedBy === 'lost' ? t('endedLost') : rec.endedBy === 'timeout' ? t('endedTimeout')
+    : goal && rec.ms >= GOAL_MS ? `${t('goalReached')} ${t('mutansRan')}` : goal ? t('goal') : t('mutansRan');
 
   const sm = summary(rec.personId);
   const box = $('resCompare'); box.innerHTML = '';
+  // 前の平均や「前より長い」は次の回の目当てになる＝目安を見せる時だけ（2026-11-05 葵）
+  box.classList.add('goal-only');
   const add = (label, ms, count) => {
     if (ms === null) return;
     const d = document.createElement('div'); d.className = 'box';
@@ -487,6 +528,16 @@ function enterRecords() {
     b.textContent = t(ph);
     b.onclick = () => { store.setSetting('phase', ph); enterRecords(); };
     sw.appendChild(b);
+  }
+
+  const gs = $('goalSwitch'); gs.innerHTML = '';
+  const gl = document.createElement('span'); gl.textContent = t('showGoal') + '：'; gs.appendChild(gl);
+  for (const on of [false, true]) {
+    const b = document.createElement('button');
+    b.className = 'btn' + (!!store.settings.showGoal === on ? ' on' : '');
+    b.textContent = t(on ? 'goalOn' : 'goalOff');
+    b.onclick = () => { store.setSetting('showGoal', on); applyGoalSetting(); enterRecords(); };
+    gs.appendChild(b);
   }
 
   const list = $('recList'); list.innerHTML = '';
@@ -549,13 +600,14 @@ $('btnCsv').onclick = () => download(`hamigaki_records_${stamp()}.csv`, store.cs
 $('btnBackup').onclick = () => download(`hamigaki_backup_${stamp()}.json`, store.backup(), 'application/json');
 $('fileRestore').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
-  try { store.restore(await f.text()); enterRecords(); } catch (err) { alert(t('restoreError')); }
+  try { store.restore(await f.text()); applyGoalSetting(); enterRecords(); } catch (err) { alert(t('restoreError')); }
   e.target.value = '';
 };
-$('btnWipe').onclick = () => { if (confirm(t('confirmDel')) && confirm(t('confirmDel'))) { store.wipe(); enterRecords(); } };
+$('btnWipe').onclick = () => { if (confirm(t('confirmDel')) && confirm(t('confirmDel'))) { store.wipe(); applyGoalSetting(); enterRecords(); } };
 
 // ---------- 起動 ----------
 setLang(store.settings.lang || 'km');
+applyGoalSetting();
 go('title');
 $('loading').classList.add('hidden');
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});

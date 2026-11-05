@@ -28,7 +28,7 @@
     <div class="langs" id="langs"></div>
     <div class="title-wrap">
       <div class="hero" aria-hidden="true">
-        <img class="hero-dent" src="assets/chara/dentman_raise.png" alt="">
+        <img class="hero-dent" src="assets/chara/dentman_raise_v2.png" alt="">
         <img class="hero-mutans" src="assets/chara/mutans_normal.png" alt="">
       </div>
       <h1 data-i18n="title"></h1>
@@ -48,9 +48,9 @@
   <section id="s-how" class="screen">
     <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="howto"></h2><span></span></header>
     <div class="steps">
-      <div class="step"><div class="num">1</div><div class="pose"><img src="assets/chara/dentman_raise.png" alt="" class="anim-lift"><span class="pose-mark up">↑</span></div><p data-i18n="how1"></p></div>
+      <div class="step"><div class="num">1</div><div class="pose"><img src="assets/chara/dentman_raise_v2.png" alt="" class="anim-lift"><span class="pose-mark up">↑</span></div><p data-i18n="how1"></p></div>
       <div class="step"><div class="num">2</div><div class="pose"><img src="assets/chara/dentman_brush.png" alt="" class="anim-scrub"><span class="pose-mark">⏱</span></div><p data-i18n="how2"></p></div>
-      <div class="step"><div class="num">3</div><div class="pose"><img src="assets/chara/dentman_raise.png" alt="" class="anim-lift"><span class="pose-mark">🏁</span></div><p data-i18n="how3"></p></div>
+      <div class="step"><div class="num">3</div><div class="pose"><img src="assets/chara/dentman_raise_v2.png" alt="" class="anim-lift"><span class="pose-mark">🏁</span></div><p data-i18n="how3"></p></div>
     </div>
     <p class="tip">💡 <span data-i18n="howTip"></span></p>
     <div class="practice" id="practiceBox">
@@ -99,13 +99,15 @@
     <div class="cam full" id="camBrush"><canvas id="overlay"></canvas></div>
     <div class="hud">
       <div class="hud-top"><span class="who-chip" id="brushWho"></span><span class="phase-tag" id="brushPhase"></span></div>
-      <div class="timer-wrap">
+      <div class="timer-wrap goal-only">
         <svg viewBox="0 0 220 220" class="goal-ring"><circle cx="110" cy="110" r="96" class="ring-bg"/><circle cx="110" cy="110" r="96" class="ring-fg" id="goalArc"/></svg>
         <div class="timer" id="timer">0:00</div>
         <div class="goal-label" data-i18n="goal"></div>
       </div>
-      <div class="enemy" id="enemy"><img id="enemyImg" src="assets/chara/mutans_normal.png" alt=""><div class="hp"><i id="hpBar"></i></div><span class="enemy-name" data-i18n="mutans"></span></div>
+      <div class="cheer" id="cheer"><img id="cheerImg" src="assets/chara/dentman_raise_v2.png" alt=""></div>
+      <div class="enemy" id="enemy"><div class="foam" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><img id="enemyImg" src="assets/chara/mutans_normal.png" alt=""><div class="hp goal-only"><i id="hpBar"></i></div><span class="enemy-name" data-i18n="mutans"></span></div>
       <div class="banner" id="banner"></div>
+      <div class="end-hint" id="endHint">↑ <span data-i18n="endHint"></span></div>
       <div class="hold" id="hold"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fg" id="holdArc"/></svg><span>↑</span></div>
       <div class="staff">
         <button class="btn small ghost" id="btnManual"><span data-i18n="staffStart"></span></button>
@@ -120,7 +122,7 @@
     <div class="result">
       <div class="res-chara"><img src="assets/chara/dentman_cheer.png" alt="" class="res-dent"><img id="resMutans" src="assets/chara/mutans_defeated.png" alt="" class="res-mutans"></div>
       <h1 data-i18n="done"></h1>
-      <div class="stars" id="stars"></div>
+      <div class="stars goal-only" id="stars"></div>
       <p class="label" data-i18n="yourTime"></p>
       <p class="big-time" id="resTime"></p>
       <p class="note" id="resNote"></p>
@@ -137,6 +139,7 @@
     <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="recTitle"></h2><span></span></header>
     <div class="rec-body">
       <div class="phase-switch" id="phaseSwitch"></div>
+      <div class="phase-switch" id="goalSwitch"></div>
       <div id="recList"></div>
       <div class="rec-tools">
         <button class="btn" id="btnCsv"><span data-i18n="exportCsv"></span></button>
