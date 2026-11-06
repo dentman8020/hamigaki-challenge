@@ -83,7 +83,7 @@ h2 { font-size: clamp(18px, 3vw, 26px); margin: 0; color: var(--paper); text-ali
 @keyframes rise { to { transform: translateY(-120vh) translateX(20px); } }
 
 /* あそびかた */
-.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .step { background: var(--paper); border: 4px solid var(--ink); border-radius: var(--radius); padding: 12px; position: relative; text-align: center; box-shadow: 0 6px 0 var(--ink); }
 .step p { margin: 6px 0 0; font-weight: 800; font-size: clamp(14px, 1.9vw, 19px); }
 .step .num { position: absolute; top: -14px; left: -10px; width: 42px; height: 42px; border-radius: 50%; background: var(--coral); color: #fff; border: 4px solid var(--ink); display: grid; place-items: center; font-weight: 800; font-size: 22px; }
@@ -225,6 +225,10 @@ h2 { font-size: clamp(18px, 3vw, 26px); margin: 0; color: var(--paper); text-ali
 .pose img { height: 100%; }
 .pose-mark { position: absolute; right: 8%; top: 6%; font-size: 34px; font-weight: 800; color: var(--coral); }
 .pose-mark.up { font-size: 52px; animation: up 1s ease-in-out infinite; }
+/* あそびかたは前カメラに写る形の写真（画像生成の子ども。2026-11-06 ボス「あそびかたは画像生成の人物出していい」） */
+.pose.photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; border: 4px solid var(--ink); background: #e9e4dd; }
+.pose.photo { height: auto; max-height: none; width: min(100%, 290px, max(160px, calc((100dvh - 610px) * 4 / 3))); margin: 0 auto; }   /* 幅で縮める（高さで決めると列を押し広げて横にはみ出す）＋背の低い画面では高さでも縮める（縦のはみ出し）＝2026-11-06 紫穂。印は写真の角に付く */
+.pose.photo .pose-mark { right: 8px; top: 14px; line-height: 1.1; background: rgba(255,255,255,.85); border-radius: 12px; padding: 0 8px; }
 .anim-lift { animation: lift2 1.4s ease-in-out infinite; transform-origin: 50% 100%; }
 .anim-scrub { animation: scrub .35s ease-in-out infinite alternate; }
 @keyframes lift2 { 50% { transform: translateY(-6px); } }

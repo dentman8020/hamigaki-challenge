@@ -5,7 +5,7 @@ import { RaiseTimer, CFG } from './gesture.js';
 import { exportXlsx, pickRecords } from './export.js';
 
 const $ = id => document.getElementById(id);
-const APP_VERSION = 'v11 (2026-11-06)';   // sw.js の VERSION と一緒に上げる
+const APP_VERSION = 'v12d (2026-11-06)';   // sw.js の VERSION と一緒に上げる
 const GOAL_MS = 3 * 60 * 1000;   // めやす3分（星3つ）
 const REG_SHOTS = 6;             // 登録で集める顔の枚数
 
@@ -392,7 +392,7 @@ async function enterBrush() {
 // 絵のコマ。新しいコマ（薫に依頼中）が無ければ、今ある絵で代わりにする
 const CHARA = 'assets/chara/';
 const FALLBACK = {
-  dentman_raise_v2: 'dentman_raise', dentman_cheer_a: 'dentman_cheer', dentman_cheer_b: 'dentman_cheer',
+  dentman_raise_v4: 'dentman_raise', dentman_cheer_a: 'dentman_cheer', dentman_cheer_b: 'dentman_cheer',
   dentman_wave_a: 'dentman_point', dentman_wave_b: 'dentman_point',
   mutans_hp4: 'mutans_normal', mutans_hp3: 'mutans_weak', mutans_hp2: 'mutans_weak', mutans_hp1: 'mutans_weak', mutans_hp0: 'mutans_weak',
 };
@@ -429,7 +429,7 @@ function updateCheer(el, st, now) {
   const box = $('cheer'), img = $('cheerImg');
   const brushing = st === 'BRUSHING';
   box.classList.toggle('go', brushing);
-  if (!brushing) { setFrame(img, 'dentman_raise_v2'); return; }
+  if (!brushing) { setFrame(img, 'dentman_raise_v4'); return; }
   const pose = Math.floor(el / 6000) % 2 ? 'dentman_wave' : 'dentman_cheer';
   setFrame(img, `${pose}_${Math.floor(now / 380) % 2 ? 'b' : 'a'}`);
 }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0e6fd8">
-<!-- 検索に出にくくする（公開先と凍結版を同じ中身にするため、アプリ側に入れておく。2026-11-06 葵） -->
+<!-- 検索に出にくくする（公開先と凍結版を同じ中身にするため、アプリ側に入れておく。2026-11-06 葵の指摘でひなが入れた） -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Toothbrush Challenge</title>
@@ -29,7 +29,7 @@
     <div class="langs" id="langs"></div>
     <div class="title-wrap">
       <div class="hero" aria-hidden="true">
-        <img class="hero-dent" src="assets/chara/dentman_raise_v2.png" alt="">
+        <img class="hero-dent" src="assets/chara/dentman_raise_v4.png" alt="">
         <img class="hero-mutans" src="assets/chara/mutans_normal.png" alt="">
       </div>
       <h1 data-i18n="title"></h1>
@@ -49,9 +49,9 @@
   <section id="s-how" class="screen">
     <header class="bar-top"><button class="btn small" data-go="title"><span data-i18n="back"></span></button><h2 data-i18n="howto"></h2><span></span></header>
     <div class="steps">
-      <div class="step"><div class="num">1</div><div class="pose"><img src="assets/chara/dentman_raise_v2.png" alt="" class="anim-lift"><span class="pose-mark up">↑</span></div><p data-i18n="how1"></p></div>
-      <div class="step"><div class="num">2</div><div class="pose"><img src="assets/chara/dentman_brush.png" alt="" class="anim-scrub"><span class="pose-mark">⏱</span></div><p data-i18n="how2"></p></div>
-      <div class="step"><div class="num">3</div><div class="pose"><img src="assets/chara/dentman_raise_v2.png" alt="" class="anim-lift"><span class="pose-mark">🏁</span></div><p data-i18n="how3"></p></div>
+      <div class="step"><div class="num">1</div><div class="pose photo"><img src="assets/howto/howto_1_raise.jpg" alt=""><span class="pose-mark up">↑</span></div><p data-i18n="how1"></p></div>
+      <div class="step"><div class="num">2</div><div class="pose photo"><img src="assets/howto/howto_2_brush.jpg" alt=""><span class="pose-mark">⏱</span></div><p data-i18n="how2"></p></div>
+      <div class="step"><div class="num">3</div><div class="pose photo"><img src="assets/howto/howto_3_done.jpg" alt=""><span class="pose-mark">🏁</span></div><p data-i18n="how3"></p></div>
     </div>
     <p class="tip">💡 <span data-i18n="howTip"></span></p>
     <div class="practice" id="practiceBox">
@@ -105,7 +105,7 @@
         <div class="timer" id="timer">0:00</div>
         <div class="goal-label" data-i18n="goal"></div>
       </div>
-      <div class="cheer" id="cheer"><img id="cheerImg" src="assets/chara/dentman_raise_v2.png" alt=""></div>
+      <div class="cheer" id="cheer"><img id="cheerImg" src="assets/chara/dentman_raise_v4.png" alt=""></div>
       <div class="enemy" id="enemy"><div class="foam" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><img id="enemyImg" src="assets/chara/mutans_normal.png" alt=""><div class="hp goal-only"><i id="hpBar"></i></div><span class="enemy-name" data-i18n="mutans"></span></div>
       <div class="banner" id="banner"></div>
       <div class="end-hint" id="endHint">↑ <span data-i18n="endHint"></span></div>
